@@ -1,14 +1,8 @@
 package com.ifrs.edu.br.poll.service;
 
 import com.ifrs.edu.br.poll.model.Poll;
-import com.ifrs.edu.br.poll.util.VoteDTO;
-
-import java.util.List;
-import java.util.Optional;
+import com.ifrs.edu.br.poll.util.PollRequest;
 
 public interface PollService {
-    Poll save(VoteDTO product);
-    List<Poll> findAll();
-    Poll update(Poll product);
-    void deleteById(Integer id);
+    Poll save(PollRequest product);
 }

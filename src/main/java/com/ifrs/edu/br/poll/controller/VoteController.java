@@ -1,16 +1,16 @@
 package com.ifrs.edu.br.poll.controller;
 
 import com.ifrs.edu.br.poll.model.Poll;
+import com.ifrs.edu.br.poll.model.Vote;
 import com.ifrs.edu.br.poll.service.VoteService;
+import com.ifrs.edu.br.poll.util.VoteRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +34,19 @@ public class VoteController {
 
         if (poll.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(poll);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{identifier}")
+    public ResponseEntity<Optional<Vote>> voteOnPoll(@PathVariable UUID identifier, @RequestBody VoteRequest vote) {
+        LOGGER.info("start() - voteOnPoll");
+
+        Optional<Vote> option = voteService.voteOnPoll(identifier, vote.getOptionId());
+
+        if (option.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(option);
         }
 
         return ResponseEntity.notFound().build();

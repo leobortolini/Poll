@@ -3,7 +3,7 @@ package com.ifrs.edu.br.poll.controller;
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.queue.QueueSender;
 import com.ifrs.edu.br.poll.service.PollService;
-import com.ifrs.edu.br.poll.util.VoteDTO;
+import com.ifrs.edu.br.poll.util.PollRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -12,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/poll")
@@ -31,7 +28,7 @@ public class PollController {
     }
 
     @PostMapping
-    public ResponseEntity<Poll> create(@RequestBody VoteDTO vote) {
+    public ResponseEntity<Poll> create(@RequestBody PollRequest vote) {
         LOGGER.info("start() - create");
         String text = "test message";
 
@@ -42,18 +39,5 @@ public class PollController {
         queueSender.send("test-exchange", "routing-key-teste", message);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(pollService.save(vote));
-    }
-
-    @PutMapping
-    public ResponseEntity<Poll> update(@RequestBody Poll product) {
-        LOGGER.info("start() - update");
-        return ResponseEntity.status(HttpStatus.OK).body(pollService.update(product));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id){
-        LOGGER.info("start() - delete");
-        pollService.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

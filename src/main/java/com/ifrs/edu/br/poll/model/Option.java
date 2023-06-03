@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Option implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String title;
     @ManyToOne
     @JoinColumn(name = "idvote")
