@@ -7,8 +7,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class QueueSender {
+
+    private final AmqpTemplate rabbitTemplate;
+
     @Autowired
-    private AmqpTemplate rabbitTemplate;
+    public QueueSender(AmqpTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     public void send(String exchange, String routingKey, Message order) {
         rabbitTemplate.convertAndSend(exchange, routingKey, order);
