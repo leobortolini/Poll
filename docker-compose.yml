@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=neijoleo@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=12345
+    ports:
+      - "89:80"
+    networks:
+      - postgres-network
+  postgres:
+    image: postgres:15.3
+    container_name: postgres153_container
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres-network
+    volumes:
+      - /home/cossack/data/postgres:/var/lib/postgresql/data
+  cache:
+    image: redis:7.0.11
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1
+    volumes:
+      - /home/cossack/data/redis:/data
+  rabbitmq:
+    image: rabbitmq:3.11.17-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/home/cossack/data/rabbitmq/log/
+      - ~/.docker-conf/rabbitmq/log/:/home/cossack/data/rabbitmq/data/
+    networks:
+      - rabbitmq_go_net
+networks:
+  postgres-network:
+    driver: bridge
+  rabbitmq_go_net:
+    driver: bridge
