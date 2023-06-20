@@ -1,8 +1,9 @@
 package com.ifrs.edu.br.poll.controller;
 
-import com.ifrs.edu.br.poll.model.Product;
+import com.ifrs.edu.br.poll.model.Vote;
 import com.ifrs.edu.br.poll.queue.QueueSender;
-import com.ifrs.edu.br.poll.service.ProductService;
+import com.ifrs.edu.br.poll.service.VoteService;
+import com.ifrs.edu.br.poll.util.VoteDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -16,35 +17,34 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v1/products")
-public class ProductController {
+@RequestMapping("api/v1/vote")
+public class VoteController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
-
-    private final ProductService productService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(VoteController.class);
+    private final VoteService voteService;
     private final QueueSender queueSender;
 
 
     @Autowired
-    public ProductController(ProductService productService, QueueSender queueSender) {
-        this.productService = productService;
+    public VoteController(VoteService voteService, QueueSender queueSender) {
+        this.voteService = voteService;
         this.queueSender = queueSender;
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> findAll() {
+    public ResponseEntity<List<Vote>> findAll() {
         LOGGER.info("start() - findAll");
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(voteService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Product>> findById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Vote>> findById(@PathVariable Long id) {
         LOGGER.info("start() - findById");
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(voteService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product product) {
+    public ResponseEntity<Vote> create(@RequestBody VoteDTO vote) {
         LOGGER.info("start() - create");
         String text = "test message";
 
@@ -54,19 +54,19 @@ public class ProductController {
 
         queueSender.send("test-exchange", "routing-key-teste", message);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
+        return ResponseEntity.status(HttpStatus.CREATED).body(voteService.save(vote));
     }
 
     @PutMapping
-    public ResponseEntity<Product> update(@RequestBody Product product) {
+    public ResponseEntity<Vote> update(@RequestBody Vote product) {
         LOGGER.info("start() - update");
-        return ResponseEntity.status(HttpStatus.OK).body(productService.update(product));
+        return ResponseEntity.status(HttpStatus.OK).body(voteService.update(product));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         LOGGER.info("start() - delete");
-        productService.deleteById(id);
+        voteService.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
