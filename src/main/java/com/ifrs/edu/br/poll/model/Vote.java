@@ -15,10 +15,7 @@ public class Vote implements Serializable {
     private Long id;
     private String title;
     private String description;
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "vote_option",
-            joinColumns = @JoinColumn(name = "idvote"),
-            inverseJoinColumns = @JoinColumn(name = "idoption"))
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "vote")
     @JsonManagedReference
     private List<Option> options;
 }

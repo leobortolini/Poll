@@ -9,5 +9,4 @@ public class VoteDTO {
     private String title;
     private String description;
     private List<String> options;
-
 }
