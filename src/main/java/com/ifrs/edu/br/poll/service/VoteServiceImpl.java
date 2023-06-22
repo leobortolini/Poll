@@ -1,7 +1,7 @@
 package com.ifrs.edu.br.poll.service;
 
 import com.ifrs.edu.br.poll.model.Option;
-import com.ifrs.edu.br.poll.model.Vote;
+import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.repository.VoteRepository;
 import com.ifrs.edu.br.poll.util.VoteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,40 +23,40 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public Vote save(VoteDTO vote) {
-        Vote newVote = new Vote();
+    public Poll save(VoteDTO vote) {
+        Poll newPoll = new Poll();
 
-        newVote.setTitle(vote.getTitle());
-        newVote.setDescription(vote.getDescription());
+        newPoll.setTitle(vote.getTitle());
+        newPoll.setDescription(vote.getDescription());
 
         List<Option> options = vote.getOptions().stream().map(option -> {
             Option newOption = new Option();
 
             newOption.setTitle(option);
-            newOption.setVote(newVote);
+            newOption.setPoll(newPoll);
 
             return newOption;
         }).toList();
 
-        newVote.setOptions(options);
+        newPoll.setOptions(options);
 
-        return voteRepository.save(newVote);
+        return voteRepository.save(newPoll);
     }
 
     @Override
-    public List<Vote> findAll() {
+    public List<Poll> findAll() {
         return voteRepository.findAll();
     }
 
     @Override
     @Cacheable(value = "product", unless="#result == null")
-    public Optional<Vote> findById(Long id) {
+    public Optional<Poll> findById(Long id) {
         return voteRepository.findById(id);
     }
 
     @Override
     @CacheEvict(value = "product", key = "#product.id")
-    public Vote update(Vote product) {
+    public Poll update(Poll product) {
         return voteRepository.save(product);
     }
 

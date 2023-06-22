@@ -1,6 +1,6 @@
 package com.ifrs.edu.br.poll.controller;
 
-import com.ifrs.edu.br.poll.model.Vote;
+import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.queue.QueueSender;
 import com.ifrs.edu.br.poll.service.VoteService;
 import com.ifrs.edu.br.poll.util.VoteDTO;
@@ -32,19 +32,19 @@ public class VoteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Vote>> findAll() {
+    public ResponseEntity<List<Poll>> findAll() {
         LOGGER.info("start() - findAll");
         return ResponseEntity.status(HttpStatus.OK).body(voteService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Vote>> findById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Poll>> findById(@PathVariable Long id) {
         LOGGER.info("start() - findById");
         return ResponseEntity.status(HttpStatus.OK).body(voteService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Vote> create(@RequestBody VoteDTO vote) {
+    public ResponseEntity<Poll> create(@RequestBody VoteDTO vote) {
         LOGGER.info("start() - create");
         String text = "test message";
 
@@ -58,7 +58,7 @@ public class VoteController {
     }
 
     @PutMapping
-    public ResponseEntity<Vote> update(@RequestBody Vote product) {
+    public ResponseEntity<Poll> update(@RequestBody Poll product) {
         LOGGER.info("start() - update");
         return ResponseEntity.status(HttpStatus.OK).body(voteService.update(product));
     }

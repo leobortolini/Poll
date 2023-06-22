@@ -1,7 +1,7 @@
 package com.ifrs.edu.br.poll.repository;
 
-import com.ifrs.edu.br.poll.model.Vote;
+import com.ifrs.edu.br.poll.model.Poll;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface VoteRepository extends JpaRepository<Vote, Long> {
+public interface VoteRepository extends JpaRepository<Poll, Long> {
 }

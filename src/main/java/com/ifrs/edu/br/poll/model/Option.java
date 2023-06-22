@@ -11,10 +11,10 @@ import java.io.Serializable;
 public class Option implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String title;
     @ManyToOne
     @JoinColumn(name = "idvote")
     @JsonBackReference
-    private Vote vote;
+    private Poll poll;
 }
