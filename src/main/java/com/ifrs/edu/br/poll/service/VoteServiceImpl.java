@@ -50,7 +50,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     @Cacheable(value = "product", unless="#result == null")
-    public Optional<Poll> findById(Long id) {
+    public Optional<Poll> findById(Integer id) {
         return voteRepository.findById(id);
     }
 
@@ -61,7 +61,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
         voteRepository.deleteById(id);
     }
 }

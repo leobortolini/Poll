@@ -38,7 +38,7 @@ public class VoteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Poll>> findById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Poll>> findById(@PathVariable Integer id) {
         LOGGER.info("start() - findById");
         return ResponseEntity.status(HttpStatus.OK).body(voteService.findById(id));
     }
@@ -64,7 +64,7 @@ public class VoteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Integer id){
         LOGGER.info("start() - delete");
         voteService.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();

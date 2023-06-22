@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface VoteService {
     Poll save(VoteDTO product);
     List<Poll> findAll();
-    Optional<Poll> findById(Long id);
+    Optional<Poll> findById(Integer id);
     Poll update(Poll product);
-    void deleteById(Long id);
+    void deleteById(Integer id);
 }
