@@ -1,72 +1,41 @@
 package com.ifrs.edu.br.poll.controller;
 
 import com.ifrs.edu.br.poll.model.Poll;
-import com.ifrs.edu.br.poll.queue.QueueSender;
 import com.ifrs.edu.br.poll.service.VoteService;
-import com.ifrs.edu.br.poll.util.VoteDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-@RestController
+@Controller
 @RequestMapping("api/v1/vote")
 public class VoteController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VoteController.class);
     private final VoteService voteService;
-    private final QueueSender queueSender;
-
 
     @Autowired
-    public VoteController(VoteService voteService, QueueSender queueSender) {
+    public VoteController(VoteService voteService) {
         this.voteService = voteService;
-        this.queueSender = queueSender;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Poll>> findAll() {
-        LOGGER.info("start() - findAll");
-        return ResponseEntity.status(HttpStatus.OK).body(voteService.findAll());
-    }
+    @GetMapping("/{identifier}")
+    public ResponseEntity<Optional<Poll>> findByIdentifier(@PathVariable UUID identifier) {
+        LOGGER.info("start() - findByUuid");
+        Optional<Poll> poll = voteService.findByIdentifier(identifier);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<Poll>> findById(@PathVariable Integer id) {
-        LOGGER.info("start() - findById");
-        return ResponseEntity.status(HttpStatus.OK).body(voteService.findById(id));
-    }
+        if (poll.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(poll);
+        }
 
-    @PostMapping
-    public ResponseEntity<Poll> create(@RequestBody VoteDTO vote) {
-        LOGGER.info("start() - create");
-        String text = "test message";
-
-        MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setHeader("ultima", "sim");
-        Message message = new Message(text.getBytes(), messageProperties);
-
-        queueSender.send("test-exchange", "routing-key-teste", message);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(voteService.save(vote));
-    }
-
-    @PutMapping
-    public ResponseEntity<Poll> update(@RequestBody Poll product) {
-        LOGGER.info("start() - update");
-        return ResponseEntity.status(HttpStatus.OK).body(voteService.update(product));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id){
-        LOGGER.info("start() - delete");
-        voteService.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.notFound().build();
     }
 }

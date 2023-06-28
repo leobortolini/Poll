@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Generated;
 
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +19,7 @@ public class Poll implements Serializable {
     private String description;
     @Generated
     private UUID identifier;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "poll")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "poll")
     @JsonManagedReference
     private List<Option> options;
 }
