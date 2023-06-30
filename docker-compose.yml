@@ -4,8 +4,8 @@ services:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
     environment:
-      - PGADMIN_DEFAULT_EMAIL=neijoleo@gmail.com
-      - PGADMIN_DEFAULT_PASSWORD=12345
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "89:80"
     networks:
@@ -14,7 +14,7 @@ services:
     image: postgres:15.3
     container_name: postgres153_container
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     networks:
