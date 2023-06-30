@@ -5,7 +5,6 @@ import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.model.Vote;
 import com.ifrs.edu.br.poll.repository.PollRepository;
 import com.ifrs.edu.br.poll.repository.VoteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +17,11 @@ public class VoteServiceImpl implements VoteService {
     private final PollRepository pollRepository;
     private final VoteRepository voteRepository;
 
-    @Autowired
     public VoteServiceImpl(PollRepository pollRepository, VoteRepository voteRepository) {
         this.pollRepository = pollRepository;
         this.voteRepository = voteRepository;
     }
+
     @Override
     @Cacheable(value = "poll")
     public Optional<Poll> findByIdentifier(UUID identifier) {

@@ -4,7 +4,6 @@ import com.ifrs.edu.br.poll.model.Option;
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.repository.PollRepository;
 import com.ifrs.edu.br.poll.util.request.PollRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +13,6 @@ public class PollServiceImpl implements PollService {
 
     private final PollRepository pollRepository;
 
-    @Autowired
     public PollServiceImpl(PollRepository pollRepository) {
         this.pollRepository = pollRepository;
     }
