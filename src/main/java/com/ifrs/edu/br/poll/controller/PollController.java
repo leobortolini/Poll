@@ -3,7 +3,7 @@ package com.ifrs.edu.br.poll.controller;
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.queue.QueueSender;
 import com.ifrs.edu.br.poll.service.PollService;
-import com.ifrs.edu.br.poll.util.PollRequest;
+import com.ifrs.edu.br.poll.util.request.PollRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;

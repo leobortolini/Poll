@@ -1,4 +1,4 @@
-package com.ifrs.edu.br.poll.util;
+package com.ifrs.edu.br.poll.util.request;
 
 import lombok.Data;
 

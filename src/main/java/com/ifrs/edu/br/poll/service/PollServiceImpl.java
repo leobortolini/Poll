@@ -3,7 +3,7 @@ package com.ifrs.edu.br.poll.service;
 import com.ifrs.edu.br.poll.model.Option;
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.repository.PollRepository;
-import com.ifrs.edu.br.poll.util.PollRequest;
+import com.ifrs.edu.br.poll.util.request.PollRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,7 @@ package com.ifrs.edu.br.poll.controller;
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.model.Vote;
 import com.ifrs.edu.br.poll.service.VoteService;
-import com.ifrs.edu.br.poll.util.VoteRequest;
+import com.ifrs.edu.br.poll.util.request.VoteRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

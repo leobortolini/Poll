@@ -1,7 +1,7 @@
 package com.ifrs.edu.br.poll.service;
 
 import com.ifrs.edu.br.poll.model.Poll;
-import com.ifrs.edu.br.poll.util.PollRequest;
+import com.ifrs.edu.br.poll.util.request.PollRequest;
 
 public interface PollService {
     Poll save(PollRequest product);
