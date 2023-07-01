@@ -13,12 +13,12 @@ import java.security.Key;
 import java.util.Base64;
 
 @Component
-public class Encrypt implements AttributeConverter<String,String> {
+public class EncryptConverter implements AttributeConverter<String,String> {
 
     private final Key key;
     private final Cipher cipher;
 
-    public Encrypt(@Value("${encrypt.key}") String secretKey) throws Exception {
+    public EncryptConverter(@Value("${encrypt.key}") String secretKey) throws Exception {
         key = new SecretKeySpec(secretKey.getBytes(), "AES");
         cipher = Cipher.getInstance("AES");
     }

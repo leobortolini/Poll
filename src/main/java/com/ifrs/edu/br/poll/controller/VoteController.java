@@ -8,6 +8,7 @@ import com.ifrs.edu.br.poll.util.dto.VoteDTO;
 import com.ifrs.edu.br.poll.util.request.VoteRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,7 @@ public class VoteController {
 
     @GetMapping("/{identifier}")
     public ResponseEntity<Optional<Poll>> findByIdentifier(@PathVariable UUID identifier) {
-        LOGGER.info("start() - findByUuid");
+        LOGGER.info("findByUuid - start()");
         Optional<Poll> poll = pollService.findByIdentifier(identifier);
 
         if (poll.isPresent()) {
@@ -42,11 +43,17 @@ public class VoteController {
     }
 
     @PostMapping("/{identifier}")
-    public ResponseEntity<Optional<Vote>> voteOnPoll(@PathVariable UUID identifier, @RequestBody VoteRequest vote) {
-        LOGGER.info("start() - voteOnPoll");
+    public ResponseEntity<Void> voteOnPoll(@PathVariable UUID identifier, @RequestBody VoteRequest vote) {
+        LOGGER.info("voteOnPoll - start()");
         VoteDTO newVote = new VoteDTO(identifier, vote);
+        try {
+            queueSender.send("test-exchange", "routing-key-teste", newVote);
+        } catch (AmqpException ex) {
+            LOGGER.error("voteOnPoll - error sending vote to queue", ex);
 
-        queueSender.send("test-exchange", "routing-key-teste", newVote);
+            return ResponseEntity.internalServerError().build();
+        }
+        LOGGER.debug("voteOnPoll - end()");
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

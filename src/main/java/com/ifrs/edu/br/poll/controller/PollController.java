@@ -26,14 +26,14 @@ public class PollController {
 
     @PostMapping
     public ResponseEntity<Poll> create(@RequestBody PollRequest vote) {
-        LOGGER.info("start() - create");
+        LOGGER.info("create - start()");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(pollService.save(vote));
     }
 
     @GetMapping("/{identifier}")
     public ResponseEntity<PollResponse> getVotes(@PathVariable UUID identifier) {
-        LOGGER.info("start() - getVotes");
+        LOGGER.info("create - start()");
         Optional<PollResponse> pollResponse = pollService.getResult(identifier);
 
         return pollResponse.map(response -> ResponseEntity.status(HttpStatus.OK).body(response)).orElseGet(() -> ResponseEntity.notFound().build());
