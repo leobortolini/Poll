@@ -2,8 +2,9 @@ package com.ifrs.edu.br.poll.controller;
 
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.model.Vote;
+import com.ifrs.edu.br.poll.queue.QueueSender;
 import com.ifrs.edu.br.poll.service.PollService;
-import com.ifrs.edu.br.poll.service.VoteService;
+import com.ifrs.edu.br.poll.util.dto.VoteDTO;
 import com.ifrs.edu.br.poll.util.request.VoteRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,12 @@ import java.util.UUID;
 public class VoteController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VoteController.class);
-    private final VoteService voteService;
     private final PollService pollService;
+    private final QueueSender queueSender;
 
-    public VoteController(VoteService voteService, PollService pollService) {
-        this.voteService = voteService;
+    public VoteController(PollService pollService, QueueSender queueSender) {
         this.pollService = pollService;
+        this.queueSender = queueSender;
     }
 
     @GetMapping("/{identifier}")
@@ -43,13 +44,10 @@ public class VoteController {
     @PostMapping("/{identifier}")
     public ResponseEntity<Optional<Vote>> voteOnPoll(@PathVariable UUID identifier, @RequestBody VoteRequest vote) {
         LOGGER.info("start() - voteOnPoll");
+        VoteDTO newVote = new VoteDTO(identifier, vote);
 
-        Optional<Vote> option = voteService.voteOnPoll(identifier, vote.getOptionId());
+        queueSender.send("test-exchange", "routing-key-teste", newVote);
 
-        if (option.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(option);
-        }
-
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
