@@ -7,6 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface VoteService {
-    Optional<Poll> findByIdentifier(UUID identifier);
     Optional<Vote> voteOnPoll(UUID poll, Long optionId);
 }

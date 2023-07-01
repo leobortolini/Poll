@@ -2,6 +2,7 @@ package com.ifrs.edu.br.poll.controller;
 
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.model.Vote;
+import com.ifrs.edu.br.poll.service.PollService;
 import com.ifrs.edu.br.poll.service.VoteService;
 import com.ifrs.edu.br.poll.util.request.VoteRequest;
 import org.slf4j.Logger;
@@ -20,15 +21,17 @@ public class VoteController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VoteController.class);
     private final VoteService voteService;
+    private final PollService pollService;
 
-    public VoteController(VoteService voteService) {
+    public VoteController(VoteService voteService, PollService pollService) {
         this.voteService = voteService;
+        this.pollService = pollService;
     }
 
     @GetMapping("/{identifier}")
     public ResponseEntity<Optional<Poll>> findByIdentifier(@PathVariable UUID identifier) {
         LOGGER.info("start() - findByUuid");
-        Optional<Poll> poll = voteService.findByIdentifier(identifier);
+        Optional<Poll> poll = pollService.findByIdentifier(identifier);
 
         if (poll.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(poll);

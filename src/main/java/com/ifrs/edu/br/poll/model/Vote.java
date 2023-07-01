@@ -1,5 +1,6 @@
 package com.ifrs.edu.br.poll.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import lombok.Data;
 public class Vote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     @ManyToOne
     @JoinColumn(name = "idpoll")
