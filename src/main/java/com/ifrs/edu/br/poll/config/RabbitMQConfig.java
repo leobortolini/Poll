@@ -1,4 +1,4 @@
-package com.ifrs.edu.br.poll.queue;
+package com.ifrs.edu.br.poll.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableRabbit
 @Configuration
-public class RabbitMQConfiguration {
+public class RabbitMQConfig {
 
     @Value("${queue.name}")
     private String queueName;
