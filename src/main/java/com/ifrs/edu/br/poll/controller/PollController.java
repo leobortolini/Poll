@@ -33,9 +33,9 @@ public class PollController {
 
     @GetMapping("/{identifier}")
     public ResponseEntity<PollResponse> getVotes(@PathVariable UUID identifier) {
-        LOGGER.info("create - start()");
+        LOGGER.info("getVotes - start()");
         Optional<PollResponse> pollResponse = pollService.getResult(identifier);
 
-        return pollResponse.map(response -> ResponseEntity.status(HttpStatus.OK).body(response)).orElseGet(() -> ResponseEntity.notFound().build());
+        return pollResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
