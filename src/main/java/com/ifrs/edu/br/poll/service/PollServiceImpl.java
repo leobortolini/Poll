@@ -46,14 +46,14 @@ public class PollServiceImpl implements PollService {
 
     @Override
     @Cacheable(value = "poll")
-    public Optional<Poll> findByIdentifier(UUID identifier) {
-        return pollRepository.findByUuid(identifier);
+    public Optional<Poll> findByIdentifier(UUID id) {
+        return pollRepository.findById(id);
     }
 
     @Override
     @Cacheable(value = "result")
-    public Optional<PollResponse> getResult(UUID identifier) {
-        Optional<Poll> poll = pollRepository.findByUuid(identifier);
+    public Optional<PollResponse> getResult(UUID id) {
+        Optional<Poll> poll = pollRepository.findById(id);
         return poll.map(value -> new PollResponse(voteRepository.getVoteCountByPoll(value.getId())));
     }
 }

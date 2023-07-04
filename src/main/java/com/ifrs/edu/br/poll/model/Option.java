@@ -16,7 +16,7 @@ public class Option implements Serializable {
     @Convert(converter = EncryptConverter.class)
     private String title;
     @ManyToOne
-    @JoinColumn(name = "idvote")
+    @JoinColumn(name = "idpoll")
     @JsonBackReference
     private Poll poll;
 }

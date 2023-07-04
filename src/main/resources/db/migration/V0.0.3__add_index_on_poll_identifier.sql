@@ -1,1 +1,0 @@
-CREATE INDEX index_poll_identifier ON poll (identifier);

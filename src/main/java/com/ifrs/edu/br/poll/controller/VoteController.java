@@ -5,8 +5,7 @@ import com.ifrs.edu.br.poll.queue.QueueSender;
 import com.ifrs.edu.br.poll.service.VoteService;
 import com.ifrs.edu.br.poll.util.dto.VoteDTO;
 import com.ifrs.edu.br.poll.util.request.VoteRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,9 +16,8 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("api/v1/vote")
+@Slf4j
 public class VoteController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(VoteController.class);
     private final VoteService voteService;
     private final QueueSender queueSender;
 
@@ -30,7 +28,7 @@ public class VoteController {
 
     @GetMapping("/{identifier}")
     public ResponseEntity<Poll> findPollByIdentifier(@PathVariable UUID identifier) {
-        LOGGER.info("findPollByIdentifier - start()");
+        log.info("findPollByIdentifier - start()");
         Optional<Poll> poll = voteService.findPollByIdentifier(identifier);
 
         return poll.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -38,16 +36,17 @@ public class VoteController {
 
     @PostMapping("/{identifier}")
     public ResponseEntity<Void> voteOnPoll(@PathVariable UUID identifier, @RequestBody VoteRequest vote) {
-        LOGGER.info("voteOnPoll - start()");
+        log.info("voteOnPoll - start()");
         VoteDTO newVote = new VoteDTO(identifier, vote);
+
         try {
             queueSender.send("test-exchange", "routing-key-teste", newVote);
         } catch (AmqpException ex) {
-            LOGGER.error("voteOnPoll - error sending vote to queue", ex);
+            log.error("voteOnPoll - error sending vote to queue", ex);
 
             return ResponseEntity.internalServerError().build();
         }
-        LOGGER.debug("voteOnPoll - end()");
+        log.debug("voteOnPoll - end()");
 
         return ResponseEntity.ok().build();
     }

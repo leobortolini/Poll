@@ -5,20 +5,17 @@ import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.model.Vote;
 import com.ifrs.edu.br.poll.repository.VoteRepository;
 import com.ifrs.edu.br.poll.util.dto.VoteDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class VoteServiceImpl implements VoteService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(VoteServiceImpl.class);
     private final VoteRepository voteRepository;
     private final PollService pollService;
 
@@ -30,20 +27,18 @@ public class VoteServiceImpl implements VoteService {
     @CacheEvict(value = "result", key = "#vote.identifier")
     @RabbitListener(queues = {"${queue.name}"})
     public void voteOnPoll(VoteDTO vote) {
-        LOGGER.debug("voteOnPoll - start()");
+        log.debug("voteOnPoll - start()");
         Optional<Poll> poll = pollService.findByIdentifier(vote.getIdentifier());
 
         if (poll.isPresent()) {
-            Optional<Option> option = poll.get().getOptions().stream().filter(opt -> Objects.equals(opt.getId(), vote.getVoteRequest().getOptionId())).findFirst();
+            Vote newVote = new Vote();
+            Option boilerOption = new Option();
 
-            if (option.isPresent()) {
-                Vote newVote = new Vote();
+            boilerOption.setId(vote.getVoteRequest().getOptionId());
+            newVote.setPoll(poll.get());
+            newVote.setOption(boilerOption);
 
-                newVote.setPoll(poll.get());
-                newVote.setOption(option.get());
-
-                voteRepository.save(newVote);
-            }
+            voteRepository.save(newVote);
         }
     }
 
