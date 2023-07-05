@@ -26,7 +26,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @CacheEvict(value = "result", key = "#vote.identifier")
-    @RabbitListener(queues = {"${queue.name}"})
+    @RabbitListener(queues = {"${queue.vote.name}"})
     public void voteOnPoll(VoteDTO vote) throws InvalidOptionException {
         log.debug("voteOnPoll - start()");
         Optional<Poll> poll = pollService.findByIdentifier(vote.getIdentifier());

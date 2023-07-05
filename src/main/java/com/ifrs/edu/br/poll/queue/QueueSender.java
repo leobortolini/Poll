@@ -3,10 +3,17 @@ package com.ifrs.edu.br.poll.queue;
 import com.ifrs.edu.br.poll.util.dto.VoteDTO;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class QueueSender {
+
+    @Value("${exchange.vote.name}")
+    private String voteExchangeName;
+
+    @Value("${routing.vote.key}")
+    private String voteRoutingKey;
 
     private final AmqpTemplate rabbitTemplate;
 
@@ -15,7 +22,7 @@ public class QueueSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void send(String exchange, String routingKey, VoteDTO order) {
-        rabbitTemplate.convertAndSend(exchange, routingKey, order);
+    public void sendVote(VoteDTO order) {
+        rabbitTemplate.convertAndSend(voteExchangeName, voteRoutingKey, order);
     }
 }

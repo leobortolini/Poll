@@ -40,7 +40,7 @@ public class VoteController {
         VoteDTO newVote = new VoteDTO(identifier, vote);
 
         try {
-            queueSender.send("test-exchange", "routing-key-teste", newVote);
+            queueSender.sendVote(newVote);
         } catch (AmqpException ex) {
             log.error("voteOnPoll - error sending vote to queue", ex);
 
