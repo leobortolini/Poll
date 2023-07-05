@@ -5,6 +5,7 @@ import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.model.Vote;
 import com.ifrs.edu.br.poll.repository.VoteRepository;
 import com.ifrs.edu.br.poll.util.dto.VoteDTO;
+import com.ifrs.edu.br.poll.util.exception.InvalidOptionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.cache.annotation.CacheEvict;
@@ -26,7 +27,7 @@ public class VoteServiceImpl implements VoteService {
 
     @CacheEvict(value = "result", key = "#vote.identifier")
     @RabbitListener(queues = {"${queue.name}"})
-    public void voteOnPoll(VoteDTO vote) {
+    public void voteOnPoll(VoteDTO vote) throws InvalidOptionException {
         log.debug("voteOnPoll - start()");
         Optional<Poll> poll = pollService.findByIdentifier(vote.getIdentifier());
 
@@ -37,8 +38,12 @@ public class VoteServiceImpl implements VoteService {
             boilerOption.setId(vote.getVoteRequest().getOptionId());
             newVote.setPoll(poll.get());
             newVote.setOption(boilerOption);
+            try {
+                voteRepository.save(newVote);
+            } catch (Exception ex) {
+                throw new InvalidOptionException();
+            }
 
-            voteRepository.save(newVote);
         }
     }
 
