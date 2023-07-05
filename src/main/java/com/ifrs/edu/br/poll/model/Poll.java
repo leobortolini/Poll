@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ifrs.edu.br.poll.util.encrypt.EncryptConverter;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Generated;
 
 import java.io.Serializable;
@@ -16,13 +17,12 @@ import java.util.UUID;
 public class Poll implements Serializable {
     @Id
     @Generated
-    @Column(insertable = false)
     private UUID id;
     @Convert(converter = EncryptConverter.class)
     private String title;
     @Convert(converter = EncryptConverter.class)
     private String description;
-    @Generated
+    @CreationTimestamp
     private LocalDateTime created_at;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "poll")
     @JsonManagedReference

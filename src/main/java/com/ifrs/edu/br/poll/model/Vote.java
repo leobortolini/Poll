@@ -3,6 +3,7 @@ package com.ifrs.edu.br.poll.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -19,4 +20,6 @@ public class Vote {
     @ManyToOne
     @JoinColumn(name = "idoption")
     private Option option;
+    @CreationTimestamp
+    private LocalDateTime created_at;
 }

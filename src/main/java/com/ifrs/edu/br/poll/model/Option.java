@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ifrs.edu.br.poll.util.encrypt.EncryptConverter;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class Option implements Serializable {
     private Long id;
     @Convert(converter = EncryptConverter.class)
     private String title;
-    @Generated
+    @CreationTimestamp
     private LocalDateTime created_at;
     @ManyToOne
     @JoinColumn(name = "idpoll")
