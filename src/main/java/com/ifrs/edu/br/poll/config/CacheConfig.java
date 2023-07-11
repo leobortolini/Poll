@@ -17,7 +17,6 @@ public class CacheConfig {
 
     private final RedisConnectionFactory redisConnectionFactory;
 
-    @Autowired
     public CacheConfig(RedisConnectionFactory redisConnectionFactory) {
         this.redisConnectionFactory = redisConnectionFactory;
     }
