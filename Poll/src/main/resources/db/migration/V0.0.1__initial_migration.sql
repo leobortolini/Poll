@@ -1,17 +1,17 @@
-CREATE TABLE vote.poll (
+CREATE TABLE poll (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title VARCHAR(30),
     description VARCHAR(50)
 );
 
-CREATE TABLE vote.option (
+CREATE TABLE option (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    idPoll UUID REFERENCES vote.poll (id),
+    idPoll UUID REFERENCES poll (id),
     title VARCHAR(50)
 );
 
-CREATE TABLE vote.vote (
+CREATE TABLE vote (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    idPoll UUID REFERENCES vote.poll (id),
-    idOption BIGINT REFERENCES vote.option (id)
+    idPoll UUID REFERENCES poll (id),
+    idOption BIGINT REFERENCES option (id)
 );
