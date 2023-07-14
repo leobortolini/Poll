@@ -1,6 +1,5 @@
-package com.ifrs.edu.br.poll.config;
+package com.ifrs.edu.br.notification.config;
 
-import lombok.Getter;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -12,35 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableRabbit
 @Configuration
-@Getter
 public class RabbitMQConfig {
-
-    @Value("${queue.vote.name}")
-    private String voteQueueName;
-
-    @Value("${exchange.vote.name}")
-    private String voteExchangeName;
-
-    @Value("${routing.vote.key}")
-    private String voteRoutingKey;
-
-    @Value("${queue.vote.deadletter.name}")
-    private String deadLetterQueueName;
-
-    @Value("${exchange.vote.deadletter.name}")
-    private String deadLetterExchangeName;
-
-    @Value("${routing.vote.deadletter.key}")
-    private String deadLetterRoutingKey;
-
-    @Value("${queue.notification.email.name}")
-    private String notificationEmailQueueName;
-
-    @Value("${exchange.notification.email.name}")
-    private String notificationEmailExchangeName;
-
-    @Value("${routing.notification.email.key}")
-    private String notificationEmailRoutingKey;
 
     @Value("${queue.notification.email.deadletter.name}")
     private String notificationEmailDeadLetterQueueName;
@@ -50,6 +21,15 @@ public class RabbitMQConfig {
 
     @Value("${routing.notification.email.deadletter.key}")
     private String notificationEmailDeadLetterRoutingKey;
+
+    @Value("${queue.notification.email.name}")
+    private String notificationEmailQueueName;
+
+    @Value("${exchange.notification.email.name}")
+    private String notificationEmailExchangeName;
+
+    @Value("${routing.notification.email.key}")
+    private String notificationEmailRoutingKey;
 
     @Value("${spring.rabbitmq.host}")
     private String host;
@@ -78,37 +58,22 @@ public class RabbitMQConfig {
         return new RabbitAdmin(connectionFactory());
     }
 
-    @Bean
-    public Queue durableQueue() {
-        return QueueBuilder.durable(voteQueueName).withArgument("x-dead-letter-exchange", deadLetterExchangeName)
-                .withArgument("x-dead-letter-routing-key", deadLetterRoutingKey).build();
-    }
-
-    @Bean
-    public DirectExchange mainExchange() {
-        return new DirectExchange(voteExchangeName, true, false);
-    }
-
-    @Bean
-    public Binding mainExchangeBinding() {
-        return BindingBuilder.bind(durableQueue()).to(mainExchange()).with(voteRoutingKey);
-    }
 
     @Bean
     public Queue deadLetterQueue() {
-        return QueueBuilder.durable(deadLetterQueueName).build();
+        return QueueBuilder.durable(notificationEmailDeadLetterQueueName).build();
     }
 
     @Bean
     public DirectExchange deadLetterExchange() {
-        return new DirectExchange(deadLetterExchangeName);
+        return new DirectExchange(notificationEmailDeadLetterExchangeName);
     }
 
     @Bean
     public Binding deadLetterBinding() {
         return BindingBuilder.bind(deadLetterQueue())
                 .to(deadLetterExchange())
-                .with(deadLetterRoutingKey);
+                .with(notificationEmailDeadLetterRoutingKey);
     }
 
     @Bean

@@ -15,6 +15,12 @@ public class QueueSender {
     @Value("${routing.vote.key}")
     private String voteRoutingKey;
 
+    @Value("${exchange.notification.email.name}")
+    private String emailNotificationExchangeName;
+
+    @Value("${routing.notification.email.key}")
+    private String emailNotificationVoteRoutingKey;
+
     private final AmqpTemplate rabbitTemplate;
 
     @Autowired
@@ -22,7 +28,11 @@ public class QueueSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendVote(VoteDTO order) {
-        rabbitTemplate.convertAndSend(voteExchangeName, voteRoutingKey, order);
+    public void sendVote(VoteDTO vote) {
+        rabbitTemplate.convertAndSend(voteExchangeName, voteRoutingKey, vote);
+    }
+
+    public void sendEmailNotification(VoteDTO vote) {
+        rabbitTemplate.convertAndSend(emailNotificationExchangeName, emailNotificationVoteRoutingKey, vote);
     }
 }

@@ -41,6 +41,7 @@ public class VoteServiceImpl implements VoteService {
         newVote.setOption(boilerOption);
 
         voteRepository.save(newVote);
+        queueSender.sendEmailNotification(vote);
     }
 
     @Override
