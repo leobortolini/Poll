@@ -1,5 +1,6 @@
 package com.ifrs.edu.br.poll.queue;
 
+import com.ifrs.edu.br.poll.util.dto.EmailNotifyDTO;
 import com.ifrs.edu.br.poll.util.dto.VoteDTO;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class QueueSender {
         rabbitTemplate.convertAndSend(voteExchangeName, voteRoutingKey, vote);
     }
 
-    public void sendEmailNotification(VoteDTO vote) {
+    public void sendEmailNotification(EmailNotifyDTO vote) {
         rabbitTemplate.convertAndSend(emailNotificationExchangeName, emailNotificationVoteRoutingKey, vote);
     }
 }

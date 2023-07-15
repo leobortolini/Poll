@@ -6,11 +6,11 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class VoteCount implements Serializable {
+public class VoteCountDTO implements Serializable {
     private Option option;
     private Long count;
 
-    public VoteCount(Option option, Long count) {
+    public VoteCountDTO(Option option, Long count) {
         this.option = option;
         this.count = count;
     }

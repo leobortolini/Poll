@@ -5,6 +5,7 @@ import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.model.Vote;
 import com.ifrs.edu.br.poll.queue.QueueSender;
 import com.ifrs.edu.br.poll.repository.VoteRepository;
+import com.ifrs.edu.br.poll.util.dto.EmailNotifyDTO;
 import com.ifrs.edu.br.poll.util.dto.VoteDTO;
 import com.ifrs.edu.br.poll.util.request.VoteRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -26,22 +27,23 @@ public class VoteServiceImpl implements VoteService {
         this.queueSender = queueSender;
     }
 
-    @CacheEvict(value = "result", key = "#vote.identifier")
+    @CacheEvict(value = "result", key = "#voteToCompute.identifier")
     @RabbitListener(queues = {"${queue.vote.name}"})
-    public void voteOnPoll(VoteDTO vote) {
+    public void voteOnPoll(VoteDTO voteToCompute) {
         log.debug("voteOnPoll - start()");
 
         Vote newVote = new Vote();
         Option boilerOption = new Option();
         Poll boilerPoll = new Poll();
 
-        boilerPoll.setId(vote.getIdentifier());
-        boilerOption.setId(vote.getVoteRequest().getOptionId());
+        boilerPoll.setId(voteToCompute.getIdentifier());
+        boilerOption.setId(voteToCompute.getVoteRequest().getOptionId());
         newVote.setPoll(boilerPoll);
         newVote.setOption(boilerOption);
 
         voteRepository.save(newVote);
-        queueSender.sendEmailNotification(vote);
+
+        queueSender.sendEmailNotification(new EmailNotifyDTO(voteToCompute.getIdentifier(), voteToCompute.getVoteRequest().getEmail()));
     }
 
     @Override

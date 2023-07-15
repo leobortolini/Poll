@@ -1,6 +1,6 @@
 package com.ifrs.edu.br.notification.service;
 
-import com.ifrs.edu.br.poll.util.dto.VoteDTO;
+import com.ifrs.edu.br.poll.util.dto.EmailNotifyDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.mail.SimpleMailMessage;
@@ -30,9 +30,13 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @RabbitListener(queues = {"${queue.notification.email.name}"})
-    public void sendEmail(VoteDTO vote) {
+    public void sendEmail(EmailNotifyDTO vote) {
         log.info("Sending email about poll " + vote.getIdentifier());
-        sendMessage("user@email.com", "Vote on " + vote.getIdentifier(), "Your vote on option " + vote.getVoteRequest().getOptionId() + " was computed");
+        try {
+            sendMessage(vote.getEmail(), "Vote on " + vote.getIdentifier(), "Your vote was computed");
+        } catch (Exception ex) {
+            log.error("Error sending vote to email queue", ex);
+        }
     }
 
 }
