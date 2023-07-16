@@ -10,8 +10,3 @@ CREATE TABLE option (
     title VARCHAR(50)
 );
 
-CREATE TABLE vote (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    idPoll UUID REFERENCES poll (id),
-    idOption BIGINT REFERENCES option (id)
-);

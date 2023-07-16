@@ -2,9 +2,12 @@ package com.ifrs.edu.br.poll.service;
 
 import com.ifrs.edu.br.poll.model.Option;
 import com.ifrs.edu.br.poll.model.Poll;
+import com.ifrs.edu.br.poll.queue.QueueSender;
 import com.ifrs.edu.br.poll.repository.PollRepository;
+import com.ifrs.edu.br.poll.util.dto.VoteDTO;
 import com.ifrs.edu.br.poll.util.request.PollRequest;
-import com.ifrs.edu.br.poll.util.response.PollResponse;
+import com.ifrs.edu.br.poll.util.request.VoteRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +16,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class PollServiceImpl implements PollService {
     private final PollRepository pollRepository;
+    private final QueueSender queueSender;
 
-    public PollServiceImpl(PollRepository pollRepository) {
+    public PollServiceImpl(PollRepository pollRepository, QueueSender queueSender) {
         this.pollRepository = pollRepository;
+        this.queueSender = queueSender;
     }
 
     @Override
@@ -48,10 +54,7 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    @Cacheable(value = "result")
-    public Optional<PollResponse> getResult(UUID id) {
-        Optional<Poll> poll = pollRepository.findById(id);
-
-        return poll.map(value -> new PollResponse(pollRepository.getVoteCountByPoll(value.getId())));
+    public void sendVote(UUID identifier, VoteRequest request) {
+        queueSender.sendVote(new VoteDTO(identifier, request.getOptionId(), request.getEmail()));
     }
 }

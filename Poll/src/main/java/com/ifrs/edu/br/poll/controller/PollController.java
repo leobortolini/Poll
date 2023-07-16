@@ -3,7 +3,7 @@ package com.ifrs.edu.br.poll.controller;
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.service.PollService;
 import com.ifrs.edu.br.poll.util.request.PollRequest;
-import com.ifrs.edu.br.poll.util.response.PollResponse;
+import com.ifrs.edu.br.poll.util.request.VoteRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,19 +29,19 @@ public class PollController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pollService.save(vote));
     }
 
-    @GetMapping("/{identifier}/result")
-    public ResponseEntity<PollResponse> getVotes(@PathVariable UUID identifier) {
-        log.info("getVotes - start()");
-        Optional<PollResponse> pollResponse = pollService.getResult(identifier);
-
-        return pollResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/{identifier}/options")
+    @GetMapping("/{identifier}")
     public ResponseEntity<Poll> findPollByIdentifier(@PathVariable UUID identifier) {
         log.info("findPollByIdentifier - start()");
         Optional<Poll> poll = pollService.findByIdentifier(identifier);
 
         return poll.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{identifier}")
+    public ResponseEntity<Void> voteOnPoll(@PathVariable UUID identifier, @RequestBody VoteRequest vote) {
+        log.info("voteOnPoll - start()");
+        pollService.sendVote(identifier, vote);
+
+        return ResponseEntity.ok().build();
     }
 }

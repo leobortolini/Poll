@@ -1,5 +1,7 @@
 package com.ifrs.edu.br.poll.queue;
 
+import com.ifrs.edu.br.poll.model.Poll;
+import com.ifrs.edu.br.poll.util.dto.VoteDTO;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,5 +21,9 @@ public class QueueSender {
     @Autowired
     public QueueSender(AmqpTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
+    }
+
+    public void sendVote(VoteDTO vote) {
+        rabbitTemplate.convertAndSend(voteExchangeName, voteRoutingKey, vote);
     }
 }

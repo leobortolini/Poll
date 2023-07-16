@@ -1,0 +1,5 @@
+CREATE TABLE vote (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    idPoll UUID,
+    idOption BIGINT
+);

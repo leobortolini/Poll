@@ -1,6 +1,6 @@
-package com.ifrs.edu.br.poll.util.response;
+package com.ifrs.edu.br.vote.util.response;
 
-import com.ifrs.edu.br.poll.util.dto.VoteCountDTO;
+import com.ifrs.edu.br.vote.util.dto.VoteCountDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

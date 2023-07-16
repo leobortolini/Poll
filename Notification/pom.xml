@@ -40,18 +40,6 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-        <dependency>
-			<groupId>com.ifrs.edu.br</groupId>
-			<artifactId>vote</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-        </dependency>
-
 	</dependencies>
 
 	<build>
