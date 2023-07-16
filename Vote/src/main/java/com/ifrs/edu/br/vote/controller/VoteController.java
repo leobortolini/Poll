@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -23,8 +22,8 @@ public class VoteController {
     @GetMapping("/{identifier}")
     public ResponseEntity<PollResponse> getVotes(@PathVariable UUID identifier) {
         log.info("getVotes - start()");
-        Optional<PollResponse> pollResponse = voteService.getResult(identifier);
+        PollResponse pollResponse = voteService.getResult(identifier);
 
-        return pollResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(pollResponse);
     }
 }

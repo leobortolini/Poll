@@ -2,6 +2,7 @@ package com.ifrs.edu.br.poll.controller;
 
 import com.ifrs.edu.br.poll.model.Poll;
 import com.ifrs.edu.br.poll.service.PollService;
+import com.ifrs.edu.br.poll.service.VoteService;
 import com.ifrs.edu.br.poll.util.request.PollRequest;
 import com.ifrs.edu.br.poll.util.request.VoteRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +18,11 @@ import java.util.UUID;
 @Slf4j
 public class PollController {
     private final PollService pollService;
+    private final VoteService voteService;
 
-    public PollController(PollService pollService) {
+    public PollController(PollService pollService, VoteService voteService) {
         this.pollService = pollService;
+        this.voteService = voteService;
     }
 
     @PostMapping
@@ -40,8 +43,11 @@ public class PollController {
     @PostMapping("/{identifier}")
     public ResponseEntity<Void> voteOnPoll(@PathVariable UUID identifier, @RequestBody VoteRequest vote) {
         log.info("voteOnPoll - start()");
-        pollService.sendVote(identifier, vote);
 
-        return ResponseEntity.ok().build();
+        if (voteService.sendVote(identifier, vote)) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.unprocessableEntity().build();
     }
 }

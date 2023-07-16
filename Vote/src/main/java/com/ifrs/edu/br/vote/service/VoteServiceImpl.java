@@ -12,7 +12,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -43,9 +42,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     @Cacheable(value = "result")
-    public Optional<PollResponse> getResult(UUID id) {
-        PollResponse response = new PollResponse(voteRepository.getVoteCountByPoll(id));
-
-        return Optional.of(response);
+    public PollResponse getResult(UUID id) {
+        return new PollResponse(voteRepository.getVoteCountByPoll(id));
     }
 }
