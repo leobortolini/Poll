@@ -24,7 +24,7 @@ public class VoteServiceImpl implements VoteService {
         this.queueSender = queueSender;
     }
 
-    @RabbitListener(queues = {"${queue.vote.name}"})
+    @RabbitListener(queues = {"${queue.vote.name}"}, concurrency = "5")
     public void voteOnPoll(List<VoteDTO> votesToCompute) {
         log.info("voteOnPoll - start() with size " + votesToCompute.size());
         List<Vote> votes = new LinkedList<>();
