@@ -7,6 +7,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Slf4j
 public class EmailServiceImpl implements EmailService {
@@ -30,13 +32,11 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @RabbitListener(queues = {"${queue.notification.email.name}"})
-    public void sendEmail(EmailNotifyDTO vote) {
-        log.info("Sending email about poll " + vote.identifier());
-        try {
-            sendMessage(vote.email(), "Vote on " + vote.identifier(), "Your vote was computed");
-        } catch (Exception ex) {
-            log.error("Error sending vote to email queue", ex);
+    public void sendEmail(List<EmailNotifyDTO> notifications) {
+        for (EmailNotifyDTO notifyDTO : notifications) {
+            log.info("Sending email about poll " + notifyDTO.identifier());
+
+            sendMessage(notifyDTO.email(), "Vote on " + notifyDTO.identifier(), "Your vote was computed");
         }
     }
-
 }

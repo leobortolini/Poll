@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class QueueSender {
 
@@ -22,7 +24,7 @@ public class QueueSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendEmailNotification(EmailNotifyDTO vote) {
+    public void sendEmailNotification(List<EmailNotifyDTO> vote) {
         rabbitTemplate.convertAndSend(emailNotificationExchangeName, emailNotificationVoteRoutingKey, vote);
     }
 }

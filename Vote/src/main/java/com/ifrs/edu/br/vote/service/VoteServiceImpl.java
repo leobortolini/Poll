@@ -8,11 +8,10 @@ import com.ifrs.edu.br.vote.util.dto.VoteDTO;
 import com.ifrs.edu.br.vote.util.response.PollResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -25,19 +24,30 @@ public class VoteServiceImpl implements VoteService {
         this.queueSender = queueSender;
     }
 
-    @CacheEvict(value = "result", key = "#voteToCompute.identifier")
     @RabbitListener(queues = {"${queue.vote.name}"})
-    public void voteOnPoll(VoteDTO voteToCompute) {
-        log.debug("voteOnPoll - start()");
+    public void voteOnPoll(List<VoteDTO> votesToCompute) {
+        log.info("voteOnPoll - start() with size " + votesToCompute.size());
+        List<Vote> votes = new LinkedList<>();
 
-        Vote newVote = new Vote();
+        for (VoteDTO voteDTO : votesToCompute) {
+            Vote newVote = new Vote();
 
-        newVote.setIdpoll(voteToCompute.identifier());
-        newVote.setIdoption(voteToCompute.option());
+            newVote.setIdpoll(voteDTO.identifier());
+            newVote.setIdoption(voteDTO.option());
 
-        voteRepository.save(newVote);
+            votes.add(newVote);
+        }
 
-        queueSender.sendEmailNotification(new EmailNotifyDTO(voteToCompute.identifier(), voteToCompute.email()));
+        List<Vote> computedVote = voteRepository.saveAllAndFlush(votes);
+
+        if (computedVote.size() == votesToCompute.size()) {
+            List<EmailNotifyDTO> notifications = new LinkedList<>();
+
+            for (VoteDTO vote : votesToCompute) {
+                notifications.add(new EmailNotifyDTO(vote.identifier(), vote.email()));
+            }
+            queueSender.sendEmailNotification(notifications);
+        }
     }
 
     @Override

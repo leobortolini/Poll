@@ -2,6 +2,7 @@ package com.ifrs.edu.br.vote.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -71,9 +72,25 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(producerJackson2MessageConverter());
+        factory.setConsumerBatchEnabled(true);
+        factory.setPrefetchCount(1000);
+        factory.setBatchListener(true);
+        factory.setBatchSize(1000);
+
+        return factory;
+    }
+
+    @Bean
     public RabbitTemplate rabbitTemplate() {
-        final var rabbitTemplate = new RabbitTemplate(connectionFactory());
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+
         rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
+
         return rabbitTemplate;
     }
 
