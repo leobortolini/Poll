@@ -27,6 +27,7 @@ public class PollServiceImpl implements PollService {
 
         newPoll.setTitle(vote.getTitle());
         newPoll.setDescription(vote.getDescription());
+        newPoll.setExpire_date(vote.getExpireDateTime());
 
         List<Option> options = vote.getOptions().stream().map(option -> {
             Option newOption = new Option();

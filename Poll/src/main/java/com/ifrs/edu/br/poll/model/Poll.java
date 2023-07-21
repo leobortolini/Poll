@@ -24,6 +24,7 @@ public class Poll implements Serializable {
     private String description;
     @CreationTimestamp
     private LocalDateTime created_at;
+    private LocalDateTime expire_date;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "poll")
     @JsonManagedReference
     private List<Option> options;

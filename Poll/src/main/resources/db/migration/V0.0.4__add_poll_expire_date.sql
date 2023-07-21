@@ -1,0 +1,1 @@
+ALTER TABLE poll ADD COLUMN expire_date timestamp;

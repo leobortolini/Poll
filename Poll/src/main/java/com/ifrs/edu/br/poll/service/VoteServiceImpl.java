@@ -7,6 +7,7 @@ import com.ifrs.edu.br.poll.util.request.VoteRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class VoteServiceImpl implements VoteService {
         log.info("sendVote - start()");
         Optional<Poll> poll = pollService.findByIdentifier(identifier);
 
-        if (poll.isPresent() && poll.get().getOptions().stream().anyMatch(option -> Objects.equals(option.getId(), request.getOptionId()))) {
+        if (poll.isPresent() && poll.get().getExpire_date().isAfter(LocalDateTime.now()) && poll.get().getOptions().stream().anyMatch(option -> Objects.equals(option.getId(), request.getOptionId()))) {
             queueSender.sendVote(new VoteDTO(identifier, request.getOptionId(), request.getEmail()));
 
             return true;
