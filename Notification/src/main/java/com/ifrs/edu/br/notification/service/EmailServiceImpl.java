@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -14,29 +15,37 @@ import java.util.List;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
 
-
     public EmailServiceImpl(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
 
     @Override
-    public void sendMessage(String to, String subject, String content) {
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setFrom("noreply@poll.com");
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(content);
-
-        javaMailSender.send(message);
+    public void sendMessage(SimpleMailMessage[] emailsTosEnd) {
+        javaMailSender.send(emailsTosEnd);
     }
 
     @RabbitListener(queues = {"${queue.notification.email.name}"})
     public void sendEmail(List<EmailNotifyDTO> notifications) {
-        for (EmailNotifyDTO notifyDTO : notifications) {
-            log.info("Sending email about poll " + notifyDTO.identifier());
+        log.info("sendEmail - start() with " + notifications.size() + " notifications to sent");
+        List<SimpleMailMessage> emailNotifications = new ArrayList<>(notifications.size());
 
-            sendMessage(notifyDTO.email(), "Vote on " + notifyDTO.identifier(), "Your vote was computed");
+        for (EmailNotifyDTO notifyDTO : notifications) {
+            SimpleMailMessage message = getSimpleMailMessage(notifyDTO);
+
+            emailNotifications.add(message);
         }
+
+        sendMessage(emailNotifications.toArray(SimpleMailMessage[]::new));
+    }
+
+    private static SimpleMailMessage getSimpleMailMessage(EmailNotifyDTO notifyDTO) {
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom("noreply@poll.com");
+        message.setTo(notifyDTO.email());
+        message.setSubject("Vote on " + notifyDTO.identifier());
+        message.setText("Your vote was computed");
+
+        return message;
     }
 }

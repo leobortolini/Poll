@@ -1,5 +1,7 @@
 package com.ifrs.edu.br.notification.service;
 
+import org.springframework.mail.SimpleMailMessage;
+
 public interface EmailService {
-    void sendMessage(String to, String subject, String content);
+    void sendMessage(SimpleMailMessage[] emailsTosEnd);
 }
