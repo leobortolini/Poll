@@ -29,29 +29,28 @@ public class VoteServiceImpl implements VoteService {
     @RabbitListener(queues = {"${queue.vote.name}"}, concurrency = "5")
     public void voteOnPoll(List<VoteDTO> votesToCompute) {
         log.info("voteOnPoll - start() with size " + votesToCompute.size());
-        pollResponseRepository.deleteAllById(votesToCompute.stream().map(VoteDTO::identifier).map(UUID::toString).toList());
-        List<Vote> votes = new LinkedList<>();
-
-        getVoteList(votesToCompute, votes);
-
-        List<Vote> computedVote = voteRepository.saveAllAndFlush(votes);
-
-        if (computedVote.size() == votesToCompute.size()) {
-            List<EmailNotifyDTO> notifications = new LinkedList<>();
-
-            for (VoteDTO vote : votesToCompute) {
-                notifications.add(new EmailNotifyDTO(vote.identifier(), vote.email()));
-            }
-
-            queueSender.sendEmailNotification(notifications);
-        } else {
-            log.error("Error while persisting votes");
-            voteRepository.flush();
-            voteRepository.deleteAllInBatch(computedVote);
-        }
+        clearPollResultCache(votesToCompute);
+        voteRepository.saveAll(getVoteList(votesToCompute));
+        queueSender.sendEmailNotification(getEmailsToSent(votesToCompute));
     }
 
-    private static void getVoteList(List<VoteDTO> votesToCompute, List<Vote> votes) {
+    private static List<EmailNotifyDTO> getEmailsToSent(List<VoteDTO> votesToCompute) {
+        List<EmailNotifyDTO> notifications = new LinkedList<>();
+
+        for (VoteDTO vote : votesToCompute) {
+            notifications.add(new EmailNotifyDTO(vote.identifier(), vote.email()));
+        }
+
+        return notifications;
+    }
+
+    private void clearPollResultCache(List<VoteDTO> votesToCompute) {
+        pollResponseRepository.deleteAllById(votesToCompute.stream().map(VoteDTO::identifier).map(UUID::toString).toList());
+    }
+
+    private static List<Vote> getVoteList(List<VoteDTO> votesToCompute) {
+        List<Vote> votes = new LinkedList<>();
+
         for (VoteDTO voteDTO : votesToCompute) {
             Vote newVote = new Vote();
 
@@ -60,6 +59,8 @@ public class VoteServiceImpl implements VoteService {
 
             votes.add(newVote);
         }
+
+        return votes;
     }
 
     @Override
