@@ -30,17 +30,10 @@ public class VoteServiceImpl implements VoteService {
     public void voteOnPoll(List<VoteDTO> votesToCompute) {
         log.info("voteOnPoll - start() with size " + votesToCompute.size());
         pollResponseRepository.deleteAllById(votesToCompute.stream().map(VoteDTO::identifier).map(UUID::toString).toList());
-
         List<Vote> votes = new LinkedList<>();
 
-        for (VoteDTO voteDTO : votesToCompute) {
-            Vote newVote = new Vote();
+        getVoteList(votesToCompute, votes);
 
-            newVote.setIdpoll(voteDTO.identifier());
-            newVote.setIdoption(voteDTO.option());
-
-            votes.add(newVote);
-        }
         List<Vote> computedVote = voteRepository.saveAllAndFlush(votes);
 
         if (computedVote.size() == votesToCompute.size()) {
@@ -52,8 +45,20 @@ public class VoteServiceImpl implements VoteService {
 
             queueSender.sendEmailNotification(notifications);
         } else {
+            log.error("Error while persisting votes");
             voteRepository.flush();
             voteRepository.deleteAllInBatch(computedVote);
+        }
+    }
+
+    private static void getVoteList(List<VoteDTO> votesToCompute, List<Vote> votes) {
+        for (VoteDTO voteDTO : votesToCompute) {
+            Vote newVote = new Vote();
+
+            newVote.setIdpoll(voteDTO.identifier());
+            newVote.setIdoption(voteDTO.option());
+
+            votes.add(newVote);
         }
     }
 

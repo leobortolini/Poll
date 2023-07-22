@@ -24,7 +24,7 @@ public class EmailServiceImpl implements EmailService {
         javaMailSender.send(emailsTosEnd);
     }
 
-    @RabbitListener(queues = {"${queue.notification.email.name}"})
+    @RabbitListener(queues = {"${queue.notification.email.name}"}, concurrency = "5-10")
     public void sendEmail(List<EmailNotifyDTO> notifications) {
         log.info("sendEmail - start() with " + notifications.size() + " notifications to sent");
         List<SimpleMailMessage> emailNotifications = new ArrayList<>(notifications.size());
