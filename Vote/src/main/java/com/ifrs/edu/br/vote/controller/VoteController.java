@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("api/v1/vote")
+@CrossOrigin
 @Slf4j
 public class VoteController {
     private final VoteService voteService;

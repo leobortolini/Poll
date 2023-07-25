@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/poll")
+@CrossOrigin
 @Slf4j
 public class PollController {
     private final PollService pollService;
