@@ -23,11 +23,6 @@ public class CacheConfig {
     @Value("${k8s.redis.port}")
     private int port;
 
-    private final JedisConnectionFactory redisConnectionFactory;
-
-    public CacheConfig(JedisConnectionFactory redisConnectionFactory) {
-        this.redisConnectionFactory = redisConnectionFactory;
-    }
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactoryUpdated() {
@@ -46,7 +41,7 @@ public class CacheConfig {
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(10));
 
-        return RedisCacheManager.builder(redisConnectionFactory)
+        return RedisCacheManager.builder(jedisConnectionFactoryUpdated())
                 .cacheDefaults(cacheConfiguration)
                 .build();
     }
