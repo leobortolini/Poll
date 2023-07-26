@@ -1,5 +1,6 @@
 package com.ifrs.edu.br.vote.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,6 +18,7 @@ public class Vote {
     private Long idoption;
     @CreationTimestamp
     private LocalDateTime created_at;
-    @Column(insertable = false, updatable = false)
+    @Transient
+    @JsonIgnore
     private String email;
 }

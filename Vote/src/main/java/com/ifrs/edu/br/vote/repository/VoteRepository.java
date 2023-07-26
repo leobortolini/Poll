@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.UUID;
 
-public interface VoteRepository extends JpaRepository<Vote, Integer> {
+public interface VoteRepository extends JpaRepository<Vote, UUID> {
     @Query("SELECT new com.ifrs.edu.br.vote.util.dto.VoteCountDTO(vote.idoption, COUNT(*)) FROM Vote vote WHERE vote.idpoll = :pollId GROUP BY vote.idoption")
     List<VoteCountDTO> getVoteCountByPoll(UUID pollId);
 }

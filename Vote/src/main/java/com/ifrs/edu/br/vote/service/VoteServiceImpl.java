@@ -79,4 +79,9 @@ public class VoteServiceImpl implements VoteService {
 
         return newPollResponse;
     }
+
+    @Override
+    public Optional<Vote> getVote(UUID id) {
+        return voteRepository.findById(id);
+    }
 }
