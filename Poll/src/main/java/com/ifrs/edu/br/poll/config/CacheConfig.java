@@ -1,12 +1,15 @@
 package com.ifrs.edu.br.poll.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 import java.time.Duration;
 
@@ -14,10 +17,28 @@ import java.time.Duration;
 @EnableCaching
 public class CacheConfig {
 
-    private final RedisConnectionFactory redisConnectionFactory;
+    @Value("${k8s.redis.host}")
+    private String host;
 
-    public CacheConfig(RedisConnectionFactory redisConnectionFactory) {
+    @Value("${k8s.redis.port}")
+    private int port;
+
+    private final JedisConnectionFactory redisConnectionFactory;
+
+    public CacheConfig(JedisConnectionFactory redisConnectionFactory) {
         this.redisConnectionFactory = redisConnectionFactory;
+    }
+
+    @Bean
+    public JedisConnectionFactory jedisConnectionFactoryUpdated() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+
+        JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
+        jedisClientConfiguration.connectTimeout(Duration.ofSeconds(60));
+
+        return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration.build());
     }
 
     @Bean
