@@ -30,15 +30,16 @@ public class VoteServiceImpl implements VoteService {
     public void voteOnPoll(List<VoteDTO> votesToCompute) {
         log.info("voteOnPoll - start() with size " + votesToCompute.size());
         clearPollResultCache(votesToCompute);
-        voteRepository.saveAll(getVoteList(votesToCompute));
-        queueSender.sendEmailNotification(getEmailsToSent(votesToCompute));
+        List<Vote> votes = voteRepository.saveAll(getVoteList(votesToCompute));
+
+        queueSender.sendEmailNotification(getEmailsToSent(votes));
     }
 
-    private static List<EmailNotifyDTO> getEmailsToSent(List<VoteDTO> votesToCompute) {
+    private static List<EmailNotifyDTO> getEmailsToSent(List<Vote> votesToCompute) {
         List<EmailNotifyDTO> notifications = new LinkedList<>();
 
-        for (VoteDTO vote : votesToCompute) {
-            notifications.add(new EmailNotifyDTO(vote.identifier(), vote.email()));
+        for (Vote vote : votesToCompute) {
+            notifications.add(new EmailNotifyDTO(vote.getIdpoll(), vote.getEmail(), vote.getId()));
         }
 
         return notifications;
@@ -56,6 +57,7 @@ public class VoteServiceImpl implements VoteService {
 
             newVote.setIdpoll(voteDTO.identifier());
             newVote.setIdoption(voteDTO.option());
+            newVote.setEmail(voteDTO.email());
 
             votes.add(newVote);
         }

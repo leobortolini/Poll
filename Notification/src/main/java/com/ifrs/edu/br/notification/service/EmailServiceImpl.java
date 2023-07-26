@@ -44,7 +44,8 @@ public class EmailServiceImpl implements EmailService {
         message.setFrom("noreply@poll.com");
         message.setTo(notifyDTO.email());
         message.setSubject("Vote on " + notifyDTO.identifier());
-        message.setText("Your vote was computed");
+        message.setText("Your vote in the poll " + notifyDTO.identifier() + " was computed. Your vote ID is: " + notifyDTO.vote() +
+                ". You can also confirm it using the vote validator on our website!");
 
         return message;
     }

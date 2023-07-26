@@ -17,4 +17,6 @@ public class Vote {
     private Long idoption;
     @CreationTimestamp
     private LocalDateTime created_at;
+    @Column(insertable = false, updatable = false)
+    private String email;
 }
