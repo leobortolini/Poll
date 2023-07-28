@@ -19,6 +19,12 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/home/cossack/data/rabbitmq/data/
     networks:
       - rabbitmq_go_net
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 networks:
   rabbitmq_go_net:
     driver: bridge
