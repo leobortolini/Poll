@@ -22,17 +22,17 @@ spec:
           - name: POSTGRES_PASSWORD
             value: "psltest"
           - name: POSTGRES_URL
-            value: "jdbc:postgresql://postgres.default.svc.cluster.local:5432/postgres"
+            value: "jdbc:postgresql://postgres-2.default.svc.cluster.local:5432/postgres"
           - name: RABBITMQ_USER
             value: "guest"
           - name: RABBITMQ_PASSWORD
             value: "guest"
           - name: RABBITMQ_HOST
-            value: "rabbitmq-nodeport.default.svc.cluster.local"
+            value: "rabbitmq-svc.default.svc.cluster.local"
           - name: RABBITMQ_PORT
             value: "5672"
           - name: REDIS_HOST
-            value: "redis-db-svc.default.svc.cluster.local"
+            value: "redis-db-svc-2.default.svc.cluster.local"
           - name: REDIS_PORT
             value: "6379"
           - name: JDBC_BATCH_SIZE
