@@ -30,9 +30,11 @@ public class EmailServiceImpl implements EmailService {
         List<SimpleMailMessage> emailNotifications = new ArrayList<>(notifications.size());
 
         for (EmailNotifyDTO notifyDTO : notifications) {
-            SimpleMailMessage message = getSimpleMailMessage(notifyDTO);
+            if (!notifyDTO.email().isEmpty()) {
+                SimpleMailMessage message = getSimpleMailMessage(notifyDTO);
 
-            emailNotifications.add(message);
+                emailNotifications.add(message);
+            }
         }
 
         sendMessage(emailNotifications.toArray(SimpleMailMessage[]::new));

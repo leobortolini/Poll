@@ -14,15 +14,15 @@ spec:
     spec:
       containers:
         - name: poll
-          image: bortolini/poll:1.1
+          image: bortolini/poll:1.2
           imagePullPolicy: IfNotPresent
           env:
           - name: POSTGRES_USER
-            value: "admin"
+            value: "<your_user_here>"
           - name: POSTGRES_PASSWORD
-            value: "psltest"
+            value: "<your_passoword_here>"
           - name: POSTGRES_URL
-            value: "jdbc:postgresql://postgres.default.svc.cluster.local:5432/postgres"
+            value: "<your_database_address_here>"
           - name: RABBITMQ_USER
             value: "guest"
           - name: RABBITMQ_PASSWORD
