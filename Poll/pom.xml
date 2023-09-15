@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ifrs.edu.br</groupId>
 	<artifactId>poll</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 	<name>Poll</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
