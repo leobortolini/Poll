@@ -5,7 +5,7 @@ CREATE TABLE poll (
 );
 
 CREATE TABLE option (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     idPoll UUID REFERENCES poll (id),
     title VARCHAR(300)
 );
