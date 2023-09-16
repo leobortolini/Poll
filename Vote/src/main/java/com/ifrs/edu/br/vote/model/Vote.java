@@ -15,7 +15,7 @@ public class Vote {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private UUID idpoll;
-    private Long idoption;
+    private UUID idoption;
     @CreationTimestamp
     private LocalDateTime created_at;
     @Transient
